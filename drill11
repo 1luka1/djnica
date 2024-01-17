@@ -477,3 +477,20 @@ const char* homofon(char* poruka)
 
 	return (const char*)kriptovanaPoruka;
 }
+
+unsigned char* encrypt_data(const unsigned char* packet_data, unsigned char* app_data, int app_length) {
+    // Dobijanje veličine UDP zaglavlja
+    size_t udp_header_size = sizeof(udp_header);
+
+    // Dobijanje veličine aplikativnog dela u UDP paketu
+    size_t app_data_offset = sizeof(ethernet_header) + sizeof(ip_header) + udp_header_size;
+    
+    // Kopiranje zaglavlja (do aplikativnog sloja) iz originalnog paketa
+    unsigned char* encrypted_packet = (unsigned char*)malloc(app_data_offset + app_length);
+    memcpy(encrypted_packet, packet_data, app_data_offset);
+
+    // Inicijalizacija aplikativnog dela u kopiji nulama
+    memset(encrypted_packet + app_data_offset, 0, app_length);
+
+    return encrypted_packet;
+}
